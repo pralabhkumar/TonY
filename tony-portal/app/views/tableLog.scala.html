@@ -1,0 +1,16 @@
+@(logs: List[JobLog])
+
+<table>
+  <tr>
+    <th>HostAddress</th>
+    <th>ContainerID</th>
+    <th>LogLink</th>
+  </tr>
+  @for(e <- logs) {
+    <tr>
+      <td>@e.getHostAddress.toString</td>
+      <td>@e.getContainerID.toString</td>
+      <td>@e.getLogLink.toString</td>
+    </tr>
+  }
+</table>

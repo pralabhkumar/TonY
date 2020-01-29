@@ -1,0 +1,12 @@
+@(logList: List[JobLog])
+
+@main("Events") {
+
+  <section id="content">
+    <div class="wrapper doc">
+      <article>
+      @tableLog(logList)
+      </article>
+    </div>
+  </section>
+}

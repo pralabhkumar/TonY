@@ -11,13 +11,6 @@
     <tr>
       <td>@e.getType.toString</td>
       <td>@e.getEvent.toString</td>
-      <td>
-        @if(e.getLogLink.toString == "NA"){
-          @e.getLogLink.toString
-        }else {
-          <a href=@e.getLogLink target="_blank">logs</a>
-        }
-      </td>
       <td>@e.getTimestamp.format("dd MMM yyyy HH:mm:ss:SSS Z")</td>
     </tr>
   }

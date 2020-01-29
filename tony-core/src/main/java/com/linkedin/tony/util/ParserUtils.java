@@ -11,6 +11,7 @@ import com.linkedin.tony.Constants;
 import com.linkedin.tony.events.Event;
 import com.linkedin.tony.models.JobConfig;
 import com.linkedin.tony.models.JobEvent;
+import com.linkedin.tony.models.JobLog;
 import com.linkedin.tony.models.JobMetadata;
 import java.io.IOException;
 import java.io.InputStream;
@@ -286,15 +287,28 @@ public class ParserUtils {
   /**
    *
    * @param events : List of events
-   * @param yarnConfiguration : YarnConfiguration ,it can be null in that case loglink would be NA
-   * @param userName : Username who have launch tony application ,it can be null in that case loglink would be NA
    * @return List of job events
    */
-  public static List<JobEvent> mapEventToJobEvent(List<Event> events, YarnConfiguration yarnConfiguration, String userName) {
+  public static List<JobEvent> mapEventToJobEvent(List<Event> events) {
     return events.stream()
-        .map((Event e) -> JobEvent.convertEventToJobEvent(e, yarnConfiguration, userName))
+        .map(JobEvent::convertEventToJobEvent)
         .collect(Collectors.toList());
   }
+
+  /**
+   *
+   * @param events : List of events
+   * @param yarnConfiguration : YarnConfiguration ,it can be null in that case loglink would be NA
+   * @param userName : Username who have launch tony application ,it can be null in that case loglink would be NA
+   * @return List of job logs
+   */
+  public static List<JobLog> mapEventToJobLog(List<Event> events, YarnConfiguration yarnConfiguration,
+      String userName) {
+    return events.stream()
+        .map(e -> JobLog.convertEventToJobLog(e, yarnConfiguration, userName))
+        .collect(Collectors.toList());
+  }
+
 
   /**
    * Given a {@link Date} and {@link ZoneId}, returns a "yyyy/mm/dd" string representation in the time zone specified.
