@@ -4,24 +4,22 @@
  */
 package com.linkedin.tony.models;
 
-
-
-
 import com.linkedin.tony.events.Event;
 import com.linkedin.tony.events.EventType;
 import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import static com.linkedin.tony.Constants.LOGS_SUFFIX;
 
 
 public class JobEvent {
   private static final Log LOG = LogFactory.getLog(JobEvent.class);
 
+  private String jobLogsLink;
   private EventType type;
   private Object event;
   private long timestamp;
-
 
   public EventType getType() {
     return type;
@@ -47,12 +45,20 @@ public class JobEvent {
     this.timestamp = timestamp;
   }
 
+  public String getLogsLink() {
+    return jobLogsLink;
+  }
 
-  public static JobEvent convertEventToJobEvent(Event e) {
+  public void setLogsLink(String jobLogsLink) {
+    this.jobLogsLink = jobLogsLink;
+  }
+
+  public static JobEvent convertEventToJobEvent(Event e, String jobID) {
     JobEvent wrapper = new JobEvent();
     wrapper.setType(e.getType());
     wrapper.setEvent(e.getEvent());
     wrapper.setTimestamp(e.getTimestamp());
+    wrapper.setLogsLink("/" + LOGS_SUFFIX + "/" + jobID);
     return wrapper;
   }
 }

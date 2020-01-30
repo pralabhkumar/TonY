@@ -2,15 +2,15 @@
 
 <table>
   <tr>
-    <th>HostAddress</th>
-    <th>ContainerID</th>
-    <th>LogLink</th>
+    <th>Host address</th>
+    <th>Container ID</th>
+    <th>Log Link</th>
   </tr>
   @for(e <- logs) {
     <tr>
       <td>@e.getHostAddress.toString</td>
       <td>@e.getContainerID.toString</td>
-      <td>@e.getLogLink.toString</td>
+      <td><a href=@e.getLogLink.toString target="_blank">logs</a></td>
     </tr>
   }
 </table>

@@ -57,7 +57,7 @@ public class JobLogPageController extends Controller {
     //to create joblogs
     List<JobEvent> jobEvents = jobEventCache.getIfPresent(jobId);
     if (jobEvents != null) {
-      listOflogs = parseJobEventsToJobLogs(userName, jobEvents);
+      listOflogs = parseJobEventsToJobLogs(userName, jobEvents, jobId);
       jobLogCache.put(jobId, listOflogs);
       return ok(views.html.log.render(listOflogs));
     }
@@ -68,10 +68,10 @@ public class JobLogPageController extends Controller {
     Path jobFolder = HdfsUtils.getJobDirPath(myFs, finished, jobId);
     if (jobFolder != null) {
       List<Event> events = ParserUtils.parseEvents(myFs, jobFolder);
-      listOflogs = ParserUtils.mapEventToJobLog(events, yarnConf, userName);
+      listOflogs = ParserUtils.mapEventToJobLog(events, yarnConf, userName, jobId);
       jobLogCache.put(jobId, listOflogs);
       //Since file is already parsed , its better populate event cache
-      jobEventCache.put(jobId, ParserUtils.mapEventToJobEvent(events));
+      jobEventCache.put(jobId, ParserUtils.mapEventToJobEvent(events, jobId));
       return ok(views.html.log.render(listOflogs));
     }
 
@@ -91,7 +91,7 @@ public class JobLogPageController extends Controller {
    */
   private String getUserNameFromMetaDataCache(String jobID) {
     String userName = null;
-    if (metaDataCache != null) {
+    if (metaDataCache != null && metaDataCache.getIfPresent(jobID) != null) {
       userName = metaDataCache.getIfPresent(jobID).getUser();
     }
     return userName;
@@ -103,11 +103,11 @@ public class JobLogPageController extends Controller {
    * @param jobEvents list of job events
    * @return list of job logs
    */
-  private List<JobLog> parseJobEventsToJobLogs(String userName, List<JobEvent> jobEvents) {
+  private List<JobLog> parseJobEventsToJobLogs(String userName, List<JobEvent> jobEvents, String jobID) {
     List<Event> events = jobEvents.stream()
         .map(jobEvent -> new Event(jobEvent.getType(), jobEvent.getEvent(), jobEvent.getTimestamp().getTime()))
         .collect(Collectors.toList());
-    List<JobLog> listOflogs = ParserUtils.mapEventToJobLog(events, yarnConf, userName);
+    List<JobLog> listOflogs = ParserUtils.mapEventToJobLog(events, yarnConf, userName, jobID);
     return listOflogs;
   }
 }

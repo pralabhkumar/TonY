@@ -49,7 +49,7 @@ public class JobEventPageController extends Controller {
     Path jobFolder = HdfsUtils.getJobDirPath(myFs, finished, jobId);
     if (jobFolder != null) {
       List<Event> events = ParserUtils.parseEvents(myFs, jobFolder);
-      listOfEvents = ParserUtils.mapEventToJobEvent(events);
+      listOfEvents = ParserUtils.mapEventToJobEvent(events, jobId);
       cache.put(jobId, listOfEvents);
       // Since file is already parsed , its better to populate job log cache
       //jobLogCache.put(jobId, ParserUtils.mapEventToJobLog(events));

@@ -289,9 +289,9 @@ public class ParserUtils {
    * @param events : List of events
    * @return List of job events
    */
-  public static List<JobEvent> mapEventToJobEvent(List<Event> events) {
+  public static List<JobEvent> mapEventToJobEvent(List<Event> events, String jobId) {
     return events.stream()
-        .map(JobEvent::convertEventToJobEvent)
+        .map(e -> JobEvent.convertEventToJobEvent(e, jobId))
         .collect(Collectors.toList());
   }
 
@@ -303,9 +303,10 @@ public class ParserUtils {
    * @return List of job logs
    */
   public static List<JobLog> mapEventToJobLog(List<Event> events, YarnConfiguration yarnConfiguration,
-      String userName) {
+      String userName, String jobId) {
     return events.stream()
-        .map(e -> JobLog.convertEventToJobLog(e, yarnConfiguration, userName))
+        .map(e -> JobLog.convertEventToJobLog(e, yarnConfiguration, userName, jobId))
+        .filter(jobLog -> jobLog.getContainerID() != null)
         .collect(Collectors.toList());
   }
 

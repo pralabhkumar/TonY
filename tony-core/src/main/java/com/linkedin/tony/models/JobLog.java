@@ -16,8 +16,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 
+import static com.linkedin.tony.Constants.JOBS_SUFFIX;
 import static com.linkedin.tony.Constants.DEFAULT_VALUE_OF_CONTAINER_LOG_LINK;
-
 
 public class JobLog {
   private static final Log LOG = LogFactory.getLog(JobLog.class);
@@ -31,6 +31,7 @@ public class JobLog {
   private String hostAddress;
   private String containerID;
   private String logLink;
+  private String jobEventsLink;
 
   public String getHostAddress() {
     return hostAddress;
@@ -56,24 +57,33 @@ public class JobLog {
     this.logLink = logLink;
   }
 
+  public String getJobEventsLink() {
+    return jobEventsLink;
+  }
+
+  public void setJobEventsLink(String jobEventsLink) {
+    this.jobEventsLink = jobEventsLink;
+  }
+
   /**
    *
    * @param e  {@link Event}
    * @param yarnConfiguration YarnConfiguration
    * @param userName userName
+   * @param jobID Application ID
    * @return Joblog
    */
-  public static JobLog convertEventToJobLog(Event e, YarnConfiguration yarnConfiguration, String userName) {
+  public static JobLog convertEventToJobLog(Event e, YarnConfiguration yarnConfiguration, String userName, String jobID) {
     JobLog wrapper = new JobLog();
     Pair<String, String> nodeIdContainerId = processEventForNodeIdContainerId(e);
     if (isParameterValid(nodeIdContainerId)) {
       wrapper.setContainerID(nodeIdContainerId.getRight());
       wrapper.setHostAddress(nodeIdContainerId.getLeft());
       wrapper.setLogLink(createLogLink(nodeIdContainerId, yarnConfiguration, userName));
+      wrapper.setJobEventsLink("/" + JOBS_SUFFIX + "/" + jobID);
     }
     return wrapper;
   }
-
 
   /**
    *
